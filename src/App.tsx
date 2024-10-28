@@ -76,13 +76,13 @@ export const App = () => {
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
 
   const clickSubmit = () => {
-    window.gtag("event", "connect_click", {
-      variant_name: "ghk_3579_android_14_17_1",
-    });
+    // window.gtag("event", "connect_click", {
+    //   variant_name: "ghk_3579_android_14_17_1",
+    // });
   };
 
   const submit = () => {
-    // clickSubmit();
+    clickSubmit();
     LS.setItem(LSKeys.ShowThx, true);
     setThx(true);
   };
