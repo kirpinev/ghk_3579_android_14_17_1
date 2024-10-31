@@ -17,11 +17,14 @@ import { LS, LSKeys } from "./ls";
 import { appSt } from "./style.css";
 import { ThxLayout } from "./thx/ThxLayout";
 import { Gap } from "@alfalab/core-components/gap";
+import { sendDataToGA } from "./utils/events.ts";
 
 interface Product {
   title: string;
   text: string;
   image: string;
+  name: string;
+  value: number;
 }
 
 const products: Array<Product> = [
@@ -29,62 +32,78 @@ const products: Array<Product> = [
     title: "+1 топовая категория кэшбэка",
     text: "5% на самое популярное",
     image: smileArrow,
+    name: "one_cashback",
+    value: 0,
   },
   {
     title: "+1 попытка крутить барабан суперкэшбэка",
     text: "Выше шанс выиграть до 100% в случайной категории",
     image: drums,
+    name: "one_baraban",
+    value: 0,
   },
   {
     title: "Секретная подборка партнёров с кэшбэком",
     text: "Доступ к специальным предложениям",
     image: gift,
+    name: "secret_cashback",
+    value: 0,
   },
   {
     title: "Увеличенный лимит кэшбэка",
     text: "7000 ₽ в месяц вместо 5000 ₽ за покупки в категориях",
     image: cashback,
+    name: "limit_cashback",
+    value: 0,
   },
   {
     title: "+1% годовых",
     text: "По накопительному Альфа-Счёту на ежедневный остаток",
     image: percent,
+    name: "alfa_schet",
+    value: 0,
   },
   {
     title: "Бесплатные уведомления",
     text: "Пуши и смс об операциях по всем дебетовым картам",
     image: free,
+    name: "free_pushes",
+    value: 0,
   },
   {
     title: "Бесплатные переводы",
     text: "По России без ограничений по сумме",
     image: transfer,
+    name: "free_transfer",
+    value: 0,
   },
   {
     title: "Бесплатное снятие наличных",
     text: "В банкоматах любых банков России",
     image: cash,
+    name: "free_cash",
+    value: 0,
   },
   {
     title: "Скидка 20% на комиссию на бирже",
     text: "0,24% за сделки с ценными бумагами и валютой",
     image: discount,
+    name: "",
+    value: 0,
   },
 ];
 
 export const App = () => {
+  const [loading, setLoading] = useState(false);
   const [thxShow, setThx] = useState(LS.getItem(LSKeys.ShowThx, false));
 
-  const clickSubmit = () => {
-    // window.gtag("event", "connect_click", {
-    //   variant_name: "ghk_3579_android_14_17_1",
-    // });
-  };
-
   const submit = () => {
-    clickSubmit();
-    LS.setItem(LSKeys.ShowThx, true);
-    setThx(true);
+    setLoading(true);
+    sendDataToGA().then(() => {
+      LS.setItem(LSKeys.ShowThx, true);
+      setThx(true);
+      setLoading(false);
+    });
   };
 
   if (thxShow) {
@@ -170,7 +189,7 @@ export const App = () => {
       <Gap size={72} />
 
       <div className={appSt.bottomBtn}>
-        <ButtonMobile block view="primary" onClick={submit}>
+        <ButtonMobile loading={loading} block view="primary" onClick={submit}>
           Подключить
         </ButtonMobile>
       </div>
